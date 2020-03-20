@@ -19,8 +19,9 @@ usethis::use_package( "thinkr" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
-golem::add_module( name = "name_of_module1" ) # Name of the module
-golem::add_module( name = "name_of_module2" ) # Name of the module
+golem::add_module( name = "Gene_set_regression" ) # Name of the module
+golem::add_module( name = "Decile" ) # Name of the 
+golem::add_module( name = "Combined_PRS" ) 
 
 ## Add helper functions ----
 ## Creates ftc_* and utils_*
