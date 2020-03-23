@@ -14,11 +14,11 @@ mod_Gene_set_regression_ui <- function(id){
       fileInput("file1", "Choose an input file",
                 multiple = F),
 
-      uiOutput("Significance_threshold"
+      uiOutput(ns("Significance_threshold")
       ),
       
     ),
-    mainPanel(plotOutput('PvalPlot'))
+    mainPanel(plotOutput(ns('PvalPlot')))
   )
 }
     
