@@ -44,7 +44,7 @@ mod_Gene_set_regression_server <- function(input, output, session){
     Full_data <- data.table::fread(input$file1$datapath)
     
     data.table::setnames(Full_data, old = c("Set","Threshold"), new = c("Genesets", "Significance_thresholds"))
-    Full_data[, Gene_regions := Genesets]
+    data.table::Full_data[, Gene_regions := Genesets]
     
     #First runthrough of PRS positions
     Positions_of_PRS_in_table <- Calculate_positions_of_genome_wide_PRS(Full_data,"Genesets")
@@ -52,9 +52,9 @@ mod_Gene_set_regression_server <- function(input, output, session){
     #Genome_wide_PRS <- which(Full_data$Gene_regions == "Base")
     #Gene_set_PRS <- which(Full_data$Gene_regions != "Base")
     
-    Full_data[,Gene_regions := "NA"]
-    Full_data[Positions_of_PRS_in_table$Genome_wide_PRS, Gene_regions := "Genome-wide"]
-    Full_data[Positions_of_PRS_in_table$Gene_set_PRS, Gene_regions := "Gene-set"]
+    data.table::Full_data[,Gene_regions := "NA"]
+    data.table::Full_data[Positions_of_PRS_in_table$Genome_wide_PRS, Gene_regions := "Genome-wide"]
+    data.table::Full_data[Positions_of_PRS_in_table$Gene_set_PRS, Gene_regions := "Gene-set"]
     
     
     ## Create arguments to shiny app
@@ -63,13 +63,13 @@ mod_Gene_set_regression_server <- function(input, output, session){
     DSM.input <- "Everything"
     
     
-    Full_data[Positions_of_PRS_in_table$Genome_wide_PRS, Type := "Whole_genome"]
-    Full_data[!Positions_of_PRS_in_table$Genome_wide_PRS, Type:= "Pathway"]
+    data.table::Full_data[Positions_of_PRS_in_table$Genome_wide_PRS, Type := "Whole_genome"]
+    data.table::Full_data[!Positions_of_PRS_in_table$Genome_wide_PRS, Type:= "Pathway"]
     
     
     # Set all P values to work within the app and add annotations
     if(any(Full_data$P == 0) == T){
-      Full_data[,P_altered := P]
+      data.table::Full_data[,P_altered := P]
       Full_data[P_altered == 0, P_altered := 1e-300]
       Full_data$logp <- -log10(Full_data$P_altered)
     }else{
