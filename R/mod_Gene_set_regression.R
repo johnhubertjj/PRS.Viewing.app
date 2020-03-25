@@ -76,8 +76,8 @@ mod_Gene_set_regression_server <- function(input, output, session){
       Full_data$logp <- -log10(Full_data$P)
     }
     
-    Full_data[,estimate := scale(Coefficient)]
-    Full_data[,SE := scale(Standard.Error)]
+    data.table::Full_data[,estimate := scale(Coefficient)]
+    data.table::Full_data[,SE := scale(Standard.Error)]
     
     Full_data$SE_higher <- Full_data$estimate + Full_data$SE
     Full_data$SE_lower <- Full_data$estimate - Full_data$SE
@@ -86,7 +86,7 @@ mod_Gene_set_regression_server <- function(input, output, session){
     Full_data$p_value_text <- paste("p =", scientific(Full_data$P, digits = 2), sep = " ")
     
     if(any(Full_data$p_value_text == "p = 0.0e+00") == TRUE){
-      Full_data[p_value_text == "p = 0.0e+00", p_value_text := "p < 1e-300"]
+      data.table::Full_data[p_value_text == "p = 0.0e+00", p_value_text := "p < 1e-300"]
     }
     
     
