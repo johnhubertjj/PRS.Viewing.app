@@ -38,23 +38,25 @@ mod_Gene_set_regression_server <- function(input, output, session){
     
     # insert alterations functions that cleans up string names
     # source("alterations_of_gene_sets_script.R")
-    
+    browser()
     
     ## Read in data
     Full_data <- data.table::fread(input$file1$datapath)
-    
+    Full_data <- data.table(Full_data)
     data.table::setnames(Full_data, old = c("Set","Threshold"), new = c("Genesets", "Significance_thresholds"))
-    data.table::Full_data[, Gene_regions := Genesets]
+    Full_data[, Gene_regions := Genesets]
     
     #First runthrough of PRS positions
     Positions_of_PRS_in_table <- Calculate_positions_of_genome_wide_PRS(Full_data,"Genesets")
     
+    
+    Full_data <- data.table(Full_data)
     #Genome_wide_PRS <- which(Full_data$Gene_regions == "Base")
     #Gene_set_PRS <- which(Full_data$Gene_regions != "Base")
     
-    data.table::Full_data[,Gene_regions := "NA"]
-    data.table::Full_data[Positions_of_PRS_in_table$Genome_wide_PRS, Gene_regions := "Genome-wide"]
-    data.table::Full_data[Positions_of_PRS_in_table$Gene_set_PRS, Gene_regions := "Gene-set"]
+    Full_data[,Gene_regions := "NA"]
+    Full_data[Positions_of_PRS_in_table$Genome_wide_PRS, Gene_regions := "Genome-wide"]
+    Full_data[Positions_of_PRS_in_table$Gene_set_PRS, Gene_regions := "Gene-set"]
     
     
     ## Create arguments to shiny app
@@ -63,21 +65,21 @@ mod_Gene_set_regression_server <- function(input, output, session){
     DSM.input <- "Everything"
     
     
-    data.table::Full_data[Positions_of_PRS_in_table$Genome_wide_PRS, Type := "Whole_genome"]
-    data.table::Full_data[!Positions_of_PRS_in_table$Genome_wide_PRS, Type:= "Pathway"]
+    Full_data[Positions_of_PRS_in_table$Genome_wide_PRS, Type := "Whole_genome"]
+    Full_data[!Positions_of_PRS_in_table$Genome_wide_PRS, Type:= "Pathway"]
     
     
     # Set all P values to work within the app and add annotations
     if(any(Full_data$P == 0) == T){
-      data.table::Full_data[,P_altered := P]
+      Full_data[,P_altered := P]
       Full_data[P_altered == 0, P_altered := 1e-300]
       Full_data$logp <- -log10(Full_data$P_altered)
     }else{
       Full_data$logp <- -log10(Full_data$P)
     }
     
-    data.table::Full_data[,estimate := scale(Coefficient)]
-    data.table::Full_data[,SE := scale(Standard.Error)]
+    Full_data[,estimate := scale(Coefficient)]
+    Full_data[,SE := scale(Standard.Error)]
     
     Full_data$SE_higher <- Full_data$estimate + Full_data$SE
     Full_data$SE_lower <- Full_data$estimate - Full_data$SE
@@ -86,20 +88,23 @@ mod_Gene_set_regression_server <- function(input, output, session){
     Full_data$p_value_text <- paste("p =", scientific(Full_data$P, digits = 2), sep = " ")
     
     if(any(Full_data$p_value_text == "p = 0.0e+00") == TRUE){
-      data.table::Full_data[p_value_text == "p = 0.0e+00", p_value_text := "p < 1e-300"]
+      Full_data[p_value_text == "p = 0.0e+00", p_value_text := "p < 1e-300"]
     }
     
     
     # Run a duplication check on the gene-set PRS names
     Full_data <- Duplication_of_gene_sets_check(Data_table = Full_data, Genome_wide_positions = Positions_of_PRS_in_table$Genome_wide_PRS, Significance_thresholds_name = "Significance_thresholds", gene_set_values = Full_data$Genesets)
+    Full_data <- data.table(Full_data)
     
     # Re-calculate the positions of whole_genome_PRS
     #Second runthrough of PRS positions
     Positions_of_PRS_in_table <- Calculate_positions_of_genome_wide_PRS(Full_data,"Genesets")
-    
+    Full_data <- data.table(Full_data)
     
     # Change names in alterations 
     alterations <- Pathway_cleanup(Full_data$Genesets, Positions_of_PRS_in_table$Genome_wide_PRS)   
+    Full_data <- data.table(Full_data)
+    
     Full_data[, alterations := alterations]
     
     #Add DSM argument script

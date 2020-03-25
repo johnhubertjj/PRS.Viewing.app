@@ -6,7 +6,11 @@
 #Significance_thresholds_name <- "Significance_thresholds"
 #gene_set_values <- Full_data$Genesets
 
+
+
 # Duplications of the gene-set in the table
+
+
 Duplication_of_gene_sets_check <- function(Data_table,Genome_wide_positions, Significance_thresholds_name, gene_set_values){
   
   ## Identify the number of gene sets and the significance thresholds input into PRSAVE
@@ -24,6 +28,7 @@ Duplication_of_gene_sets_check <- function(Data_table,Genome_wide_positions, Sig
     Data_table_new <- Data_table %>%
       dplyr::distinct()
   }
+  Data_table_new <- data.table(Data_table_new)
   Data_table_new
 }
 
