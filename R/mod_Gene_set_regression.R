@@ -37,8 +37,6 @@ mod_Gene_set_regression_server <- function(input, output, session){
     cat(file=stderr(), "accessing_file input system")
     
     # insert alterations functions that cleans up string names
-    # source("alterations_of_gene_sets_script.R")
-    browser()
     
     ## Read in data
     Full_data <- data.table::fread(input$file1$datapath)
@@ -46,7 +44,8 @@ mod_Gene_set_regression_server <- function(input, output, session){
     data.table::setnames(Full_data, old = c("Set","Threshold"), new = c("Genesets", "Significance_thresholds"))
     Full_data[, Gene_regions := Genesets]
     
-    #First runthrough of PRS positions
+    # First runthrough of PRS positions 
+    # From utils_helpers.R
     Positions_of_PRS_in_table <- Calculate_positions_of_genome_wide_PRS(Full_data,"Genesets")
     
     
@@ -93,6 +92,7 @@ mod_Gene_set_regression_server <- function(input, output, session){
     
     
     # Run a duplication check on the gene-set PRS names
+    # From utils_helpers.R
     Full_data <- Duplication_of_gene_sets_check(Data_table = Full_data, Genome_wide_positions = Positions_of_PRS_in_table$Genome_wide_PRS, Significance_thresholds_name = "Significance_thresholds", gene_set_values = Full_data$Genesets)
     Full_data <- data.table(Full_data)
     
@@ -102,6 +102,7 @@ mod_Gene_set_regression_server <- function(input, output, session){
     Full_data <- data.table(Full_data)
     
     # Change names in alterations 
+    # From utils_helpers.R
     alterations <- Pathway_cleanup(Full_data$Genesets, Positions_of_PRS_in_table$Genome_wide_PRS)   
     Full_data <- data.table(Full_data)
     
