@@ -85,7 +85,7 @@ mod_Gene_set_regression_server <- function(input, output, session){
     Full_data$SE_lower <- Full_data$estimate - Full_data$SE
     Full_data$r2_dir <- 100 * (as.numeric(Full_data$R2) *
                                  (sign(as.numeric(Full_data$estimate))))
-    Full_data$p_value_text <- paste("p =", scientific(Full_data$P, digits = 2), sep = " ")
+    Full_data$p_value_text <- paste("p =", scales::scientific(Full_data$P, digits = 2), sep = " ")
     
     if(any(Full_data$p_value_text == "p = 0.0e+00") == TRUE){
       Full_data[p_value_text == "p = 0.0e+00", p_value_text := "p < 1e-300"]

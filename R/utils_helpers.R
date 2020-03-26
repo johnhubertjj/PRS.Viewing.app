@@ -41,8 +41,8 @@ Pathway_cleanup <- function(alterations, Genome_wide_positions){
 Calculate_positions_of_genome_wide_PRS <- function(Data_table, Gene_regions_column){
   Type_of_PRS_positions <- list()
   
-  Type_of_PRS_positions[["Genome_wide_PRS"]] <- which(Data_table[[gene_set_column_name]] == "Base")
-  Type_of_PRS_positions[["Gene_set_PRS"]] <- which(Data_table[[gene_set_column_name]] != "Base")
+  Type_of_PRS_positions[["Genome_wide_PRS"]] <- which(Data_table[[Gene_regions_column]] == "Base")
+  Type_of_PRS_positions[["Gene_set_PRS"]] <- which(Data_table[[Gene_regions_column]] != "Base")
   
   Type_of_PRS_positions
 }
