@@ -18,6 +18,7 @@
 usethis::use_package( "thinkr" )
 usethis::use_package("data.table")
 usethis::use_package("plyr")
+usethis::use_package("dplyr")
 usethis::use_package("scales")
 usethis::use_package("ggplot2")
 
