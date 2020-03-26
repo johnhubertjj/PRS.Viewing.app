@@ -120,6 +120,33 @@ mod_Gene_set_regression_server <- function(input, output, session){
     
   })
   
+  part_2 <- reactive({ 
+    
+    #Gene_regions <- c("Genome-wide", "Gene-set")
+    #Significance_thresholds <- c(0.5,1)
+    #Genesets <- "GO_CARDIAC_DEVELOPMENT.bed"
+    
+    Current_table <- My_data()$Full_data %>%
+      
+      dplyr::filter(samples.i. == input$DSM,
+             Gene_regions %in% Gene_region_debounce(),
+             Significance_thresholds %in% sigthreshold_debounce(),
+             Genesets %in% gene_set_debounce())
+    
+    Sample_analysis_2 <- as.data.table(Current_table)
+    Sample_analysis_2$score <- factor(Sample_analysis_2$score, levels = Sample_analysis_2$score[order(Sample_analysis_2$score, Sample_analysis_2$Type)])
+    Sample_analysis_2$alterations <- factor(Sample_analysis_2$alterations, levels = unique(Sample_analysis_2$alterations[order(Sample_analysis_2$score, Sample_analysis_2$Type)]))
+    Sample_analysis_2
+    
+    ## Format DF to DT and apply fixes to the number of decimal points, format "g" = change to nn.dde-dd only if required
+    
+    ## Okay, so faceting was not meant to have differing axis lables, but in order to place the axis in the right order, I need to specify just one threshold and repeat across all facets
+    ## I've used a short-cut here, the line 108 sorts the alterations column by the score and type and then only selects the unique labels for these columns so that the structure is "repeated" across all thresholds
+    ## despite not knowing how many thresholds are in the analysis...i've saved a few lines of code and thought here.
+    
+    
+  })
+  
   
   output$Significance_threshold <- renderUI({ 
     significance_threshold.input <- as.numeric(My_data()$significance_threshold.input)
@@ -139,7 +166,10 @@ mod_Gene_set_regression_server <- function(input, output, session){
                        choices = Gene.sets.input, selected = Gene.sets.input)
   })
   
-  
+  # debouncing algorithm -> MUST GO HERE because of the rendering UI scripts above and reactivity scripts have not been processed yet
+  sigthreshold_debounce <- reactive({ input$Significance_threshold }) %>% debounce(1000)
+  gene_set_debounce <- reactive({ input$geneset }) %>% debounce(1000)
+  Gene_region_debounce <- reactive({ input$Gene_regions }) %>% debounce(1000)
   
   output$PvalPlot <- renderPlot({
     
@@ -148,7 +178,7 @@ mod_Gene_set_regression_server <- function(input, output, session){
     
     
     # Plot the resulting table for comparisons
-    p <- ggplot(part_2(), aes(x=score, y=logp, fill = Type, group=Significance_thresholds))
+    p <- ggplot2::ggplot(part_2(), aes(x=score, y=logp, fill = Type, group=Significance_thresholds))
     
     p <- p +
       geom_point(aes(colour = Type))

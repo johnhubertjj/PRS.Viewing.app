@@ -18,7 +18,8 @@
 usethis::use_package( "thinkr" )
 usethis::use_package("data.table")
 usethis::use_package("plyr")
-
+usethis::use_package("scales")
+usethis::use_package("ggplot2")
 
 ## Add modules ----
 ## Create a module infrastructure in R/
