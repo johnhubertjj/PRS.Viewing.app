@@ -22,7 +22,10 @@ mod_Gene_set_regression_ui <- function(id){
       uiOutput(ns("geneset")),
       
     ),
-    mainPanel(plotOutput(ns('PvalPlot')))
+    mainPanel(plotOutput(ns('PvalPlot')),
+              plotOutput(ns('Beta_plot')),
+              plotOutput(ns('R2_plot'))
+              )
   )
 }
     
@@ -208,6 +211,103 @@ mod_Gene_set_regression_server <- function(input, output, session){
     p <- p + ggplot2::xlab(label = "Polygenic risk score")
     p
 })
+  output$Beta_plot <- renderPlot({
+    
+    My_data()
+    if (is.null(sigthreshold_debounce())) {
+      return(NULL)
+    }    
+    if (is.null(gene_set_debounce())) {
+      return(NULL)
+    }    
+    if (is.null(Gene_region_debounce())) {
+      return(NULL)
+    }    
+    
+    
+    # Put in the code below above, removing all of the excess alterations work to create the pdf plots...
+    
+    p <- ggplot2::ggplot(part_2(), ggplot2::aes(x=score, y=estimate, fill = Type, group=Significance_thresholds))
+    
+    p <- p +
+      ggplot2::geom_errorbar(ggplot2::aes(ymin = SE_higher, ymax = SE_lower), position = "dodge", width = 0.25) +
+      ggplot2::geom_point(ggplot2::aes(colour = Type))
+    
+    p <- p + ggplot2::scale_x_discrete(labels= levels(part_2()$alterations))
+    p <- p + ggplot2::facet_grid(. ~ as.double(Significance_thresholds), scales = "free_x", space = "free_x") +
+      ggplot2::theme(strip.text.x = ggplot2::element_text(size = 10))
+    p <- p + ggplot2::geom_hline(ggplot2::aes(yintercept=0), colour = "red", linetype= "solid", alpha = 0.25)
+    p <- p + ggplot2::scale_fill_brewer(palette = "Paired")
+    p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,size = 10,hjust = 1,vjust = 0.5))
+    p <- p + ggplot2::ggtitle(part_2()$.id[1])
+    p <- p + ggplot2::theme(plot.title = ggplot2::element_text( face = "bold",hjust = 0.5))
+    p <- p + ggplot2::ylab(label = "BETA")
+    p <- p + ggplot2::xlab(label = "Polygenic risk score")
+    p
+    
+    # ggplotly(p) %>% 
+    # layout(height = input$plotHeight, autosize=TRUE)
+    
+    # Possible improvements:
+    # Implement in switch from whole genome to gene-sets
+    # Implement data-table of the raw results
+    # Implement output file of the plots
+    # Colour rows for significant values
+    # Incorporate into its own app
+    # 
+    
+  })
+  output$R2_plot <- renderPlot({
+    
+    My_data()
+    
+    if (is.null(sigthreshold_debounce())) {
+      return(NULL)
+    }    
+    if (is.null(gene_set_debounce())) {
+      return(NULL)
+    }    
+    if (is.null(Gene_region_debounce())) {
+      return(NULL)
+    }    
+    
+    p <- ggplot2::ggplot(part_2(), ggplot2::aes(x=score, y=r2_dir, fill = Type, group=Significance_thresholds))
+    p <- p +
+      ggplot2::geom_bar(stat = "identity", ggplot2::aes(colour = Type), position = "dodge") +
+      ggplot2::geom_text(data=subset(part_2(), P < 0.05),
+                         ggplot2::aes(x=score,y=r2_dir,label=p_value_text, hjust=ifelse(sign(r2_dir)>0, 0, 0)), angle = 90, position = ggplot2::position_dodge(width = 1), size = 2.9)
+    
+    #Problem with labels with a workaround
+    # I use the score column in the format of factors and reference each relevant dataset for ggplot.
+    # However this relies on having 0.05 and 0.5 in the value name.
+    # scale_x_discrete accepts functions, but I also need to convert SCORE_0.05 and Score_0.5 into a "Whole_genome_PRS" which is almost impossible to write"
+    # However as the labels function accepts key:value pairs, I wrote a vector in R that maps the original names of the pathways to "human readable" format using names function in R
+    # This should work for most instances
+    
+    p <- p + ggplot2::scale_x_discrete(labels= levels(part_2()$alterations))
+    p <- p + ggplot2::scale_y_continuous(expand = ggplot2::expand_scale(mult = c(0.2,.6)))
+    p <- p + ggplot2::facet_grid(. ~ as.double(Significance_thresholds), scales = "free_x", space = "free_x") +
+      ggplot2::theme(strip.text.x = ggplot2::element_text(size = 10))
+    p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, size = 10, hjust = 1,vjust = 0.5))
+    p <- p + ggplot2::ggtitle(part_2()$.id[1])
+    p <- p + ggplot2::theme(plot.title = ggplot2::element_text( face = "bold",hjust = 0.5))
+    p <- p + ggplot2::ylab(label = "R2_dir (%)")
+    p <- p + ggplot2::xlab(label = "Polygenic risk score")
+    p
+    
+    #ggplotly(p) %>% 
+    #  layout(height = input$plotHeight, autosize=TRUE)
+    
+    # Possible improvements:
+    # Implement in switch from whole genome to gene-sets
+    # Implement data-table of the raw results
+    # Implement output file of the plots
+    # Colour rows for significant values
+    # Incorporate into its own app
+    # 
+    
+  })
+  
 }
     
 ## To be copied in the UI

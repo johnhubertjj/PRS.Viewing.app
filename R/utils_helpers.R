@@ -46,3 +46,4 @@ Calculate_positions_of_genome_wide_PRS <- function(Data_table, Gene_regions_colu
   
   Type_of_PRS_positions
 }
+
