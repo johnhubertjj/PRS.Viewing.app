@@ -9,6 +9,7 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # List the first level UI elements here 
+    
     fluidPage(
       h1("PRS.viewing.app"),
       mod_Gene_set_regression_ui("Gene_set_regression_ui_1")

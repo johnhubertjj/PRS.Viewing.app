@@ -21,6 +21,12 @@ usethis::use_package("plyr")
 usethis::use_package("dplyr")
 usethis::use_package("scales")
 usethis::use_package("ggplot2")
+usethis::use_package("shinyWidgets")
+usethis::use_package("shinycssloaders")
+usethis::use_package("shinydashboard")
+usethis::use_package("shinyjs")
+
+
 
 ## Add modules ----
 ## Create a module infrastructure in R/
