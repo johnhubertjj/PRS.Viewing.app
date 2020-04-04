@@ -20,6 +20,8 @@ mod_Gene_set_regression_ui <- function(id){
                            choices = c("Genome-wide","Gene-set")),
       uiOutput(ns("DSM")),
       uiOutput(ns("geneset")),
+      sliderInput('plotHeight', 'Bar which does nothing, use if bored', 
+                  min = 100, max = 2000, value = 1000)
       
     ),
     mainPanel(plotOutput(ns('PvalPlot')),
