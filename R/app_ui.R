@@ -8,26 +8,23 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    fluidPage(
+    
     # List the first level UI elements here 
+
       navbarPage(
-  tags$script(HTML("var header = $('.navbar > .container-fluid');
- header.append('<div style=\"float:right\"><h3>This is R</h3></div>');"
-      )),
-      tags$script(HTML("var header = $('.navbar > .container-fluid');
-header.append('<div style=\"float:right\"><ahref=\"URL\"><img src=\"www/PRSent_logo.png\" alt=\"alt\" style=\"float:right;width:33px;height:41px;padding-top:10px;\"> </a></div>');
-    console.log(header)")
-      ),
-      title = tags$div(img(src="www/PRSent_logo.png", height = '40px', width = '40px'), "something"),
+    # Create a logo in the top left, will probably undo at a later date while I create a style in JS or CSS myself, but this will work for now.
+ 
+      title = tags$div(img(src="www/PRSent_logo.png", style="margin-top: -14px; padding-right:10px;padding-bottom:10px", height = 60)),
                   fluid = T, 
-                  theme = shinythemes::shinytheme("sandstone"),
+                  theme = shinythemes::shinytheme("united"),
+                  windowTitle="PRSent your data clearly",
                   #titlePanel(title=img(src='www/PRSent_logo.png')),
                   tabPanel("Gene-set Analysis Viewer",
                     mod_Gene_set_regression_ui("Gene_set_regression_ui_1")
                   )
       )
     )
-  )
+  
 }
 
 #' Add external Resources to the Application
@@ -50,11 +47,12 @@ golem_add_external_resources <- function(){
     favicon(ext = 'png'),
     bundle_resources(
       path = app_sys('app/www'),
-      app_title = 'PRS.viewing.app'
+      app_title = 'PRSent'
     ),
     
     tags$link(rel = "shortcut icon", type = "image/png", href = "www/PRSent_logo.png"),
-    tags$title("Browser tab title")
+    tags$link(rel = "shortcut icon", type = "image/png", href = "www/GitHub-Mark.png"),
+    tags$title("PRSent")
     
 
     #shinyalert::useShinyalert()
