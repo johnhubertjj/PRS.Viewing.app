@@ -25,6 +25,7 @@ usethis::use_package("shinyWidgets")
 usethis::use_package("shinycssloaders")
 usethis::use_package("shinydashboard")
 usethis::use_package("shinyjs")
+usethis::use_package("shinythemes")
 
 
 
@@ -43,7 +44,7 @@ golem::add_utils( "helpers" )
 ## Creates .js and .css files at inst/app/www
 golem::add_js_file( "script" )
 golem::add_js_handler( "handlers" )
-golem::add_css_file( "custom" )
+golem::add_css_file( "test" )
 
 ## Add internal datasets ----
 ## If you have data in your package
