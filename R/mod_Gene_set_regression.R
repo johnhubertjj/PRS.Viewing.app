@@ -27,6 +27,26 @@ mod_Gene_set_regression_ui <- function(id){
     mainPanel(plotOutput(ns('PvalPlot')),
               plotOutput(ns('Beta_plot')),
               plotOutput(ns('R2_plot'))
+              
+              mainPanel(
+                tabsetPanel(id = "tabs",
+                            
+                            tabPanel("Plots",
+                                       plotOutput('PvalPlot'),
+                                       plotOutput('Beta_plot'),
+                                       plotOutput('R2_plot'),
+                            tabPanel("Table", dataTableOutput("summary_table")),
+                            tabPanel("Input variables",
+                                     rclipboardSetup(),
+                                     
+                                     
+                                     textAreaInput("text_2",label = "Full message will appear here:",width = "500px",height = "100px", resize = "both",
+                                                   placeholder = "Twitter handles will appear here at the end of your message depending on the options selected to the left (eg: Pint of Science is Great! @virustinkerer)")
+                                     ,
+                                     # UI ouputs for the copy-to-clipboard buttons
+                                     uiOutput("clip"))
+                )
+              )
               )
   )
 }
