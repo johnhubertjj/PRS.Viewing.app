@@ -14,7 +14,7 @@ app_ui <- function(request) {
       navbarPage(
     # Create a logo in the top left, will probably undo at a later date while I create a style in JS or CSS myself, but this will work for now.
  
-      title = tags$div(img(src="www/PRSent_logo.png", style="margin-top: -14px; padding-right:10px;padding-bottom:10px", height = 60)),
+      title = tags$div(img(src="www/PRSent_logo.png", style="margin-top: -20px; padding-right:10px;padding-bottom:10px", height = 75)),
                   fluid = T, 
                   theme = shinythemes::shinytheme("united"),
                   windowTitle="PRSent your data clearly",
