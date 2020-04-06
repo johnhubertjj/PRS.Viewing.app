@@ -26,6 +26,8 @@ usethis::use_package("shinycssloaders")
 usethis::use_package("shinydashboard")
 usethis::use_package("shinyjs")
 usethis::use_package("shinythemes")
+usethis::use_package("rclipboard")
+usethis::use_package("DT")
 
 
 

@@ -10,6 +10,7 @@
 mod_Gene_set_regression_ui <- function(id){
   ns <- NS(id)
   tagList(
+    sidebarLayout(
     sidebarPanel(
       fileInput(ns("file1"), "Choose an input file",
                 multiple = F),
@@ -24,31 +25,19 @@ mod_Gene_set_regression_ui <- function(id){
                   min = 100, max = 2000, value = 1000)
       
     ),
-    mainPanel(plotOutput(ns('PvalPlot')),
-              plotOutput(ns('Beta_plot')),
-              plotOutput(ns('R2_plot'))
-              
-              mainPanel(
+    mainPanel(
                 tabsetPanel(id = "tabs",
                             
                             tabPanel("Plots",
-                                       plotOutput('PvalPlot'),
-                                       plotOutput('Beta_plot'),
-                                       plotOutput('R2_plot'),
-                            tabPanel("Table", dataTableOutput("summary_table")),
-                            tabPanel("Input variables",
-                                     rclipboardSetup(),
-                                     
-                                     
-                                     textAreaInput("text_2",label = "Full message will appear here:",width = "500px",height = "100px", resize = "both",
-                                                   placeholder = "Twitter handles will appear here at the end of your message depending on the options selected to the left (eg: Pint of Science is Great! @virustinkerer)")
-                                     ,
-                                     # UI ouputs for the copy-to-clipboard buttons
-                                     uiOutput("clip"))
-                )
+                                     plotOutput(ns('PvalPlot')),
+                                     plotOutput(ns('Beta_plot')),
+                                     plotOutput(ns('R2_plot'))),
+                            tabPanel("Table", dataTableOutput(ns('summary_table')))
+                                    )
+                            )
               )
-              )
-  )
+    )
+  
 }
     
 #' Gene_set_regression Server Function
@@ -329,6 +318,50 @@ mod_Gene_set_regression_server <- function(input, output, session){
     # 
     
   })
+  output$summary_table <- renderDataTable({
+    
+    My_data()
+    #browser()
+    # These are required in case no tick boxes are selected
+    if (is.null(input$Significance_threshold)) {
+      return(NULL)
+    }    
+    if (is.null(input$geneset)) {
+      return(NULL)
+    }    
+    if (is.null(input$Gene_regions)) {
+      return(NULL)
+    }    
+    
+    # Select columns you wish to output
+    cols <- c("estimate", "SE","R2","P", "Num_SNP")
+    
+    ## Limit data table to input arguments and pipe to limiting columns and ordering based on significance
+    sample_analysis <- My_data()$Full_data %>%
+      dplyr::filter(samples.i. == input$DSM,
+             Gene_regions %in% Gene_region_debounce(),
+             Significance_thresholds %in% sigthreshold_debounce(),
+             Genesets %in% gene_set_debounce()
+      )  %>%
+      dplyr::select(c(Genesets,Gene_regions,Significance_thresholds,estimate,SE,P,R2,Num_SNP)) %>%
+      dplyr::arrange(P)
+    
+    ## Format DF to DT and apply fixes to the number of decimal points, format "g" = change to nn.dde-dd only if required
+    Sample_analysis_2 <- data.table::as.data.table(sample_analysis)
+    Sample_analysis_2[, (cols) := lapply(.SD, formatC, digits = 3, format = "g"), .SDcols = cols]
+    
+    ## leave datatable function in for "prettyfying" the final result    
+    DT::datatable(data = Sample_analysis_2,
+              options = list(pageLength = 10),
+              rownames = F)
+    
+    # Possible improvements:
+    # colour rows for significant values
+    # incorporate into its own app
+    # 
+  })
+  
+  
   
 }
     
