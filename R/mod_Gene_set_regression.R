@@ -32,7 +32,7 @@ mod_Gene_set_regression_ui <- function(id){
                                      plotOutput(ns('PvalPlot')),
                                      plotOutput(ns('Beta_plot')),
                                      plotOutput(ns('R2_plot'))),
-                            tabPanel("Table", dataTableOutput(ns('summary_table'))),
+                            tabPanel("Table", DT::dataTableOutput(outputId = ns('summary_table'))),
                             tabPanel("Input variables",
                                      rclipboard::rclipboardSetup(),
                                      
@@ -327,21 +327,12 @@ mod_Gene_set_regression_server <- function(input, output, session){
     # 
     
   })
-  output$summary_table <- renderDataTable({
+  output$summary_table <- DT::renderDataTable({
     
     My_data()
-    #browser()
-    # These are required in case no tick boxes are selected
-    if (is.null(input$Significance_threshold)) {
-      return(NULL)
-    }    
-    if (is.null(input$geneset)) {
-      return(NULL)
-    }    
-    if (is.null(input$Gene_regions)) {
-      return(NULL)
-    }    
+   # browser()
     
+  
     # Select columns you wish to output
     cols <- c("estimate", "SE","R2","P", "Num_SNP")
     
@@ -361,7 +352,7 @@ mod_Gene_set_regression_server <- function(input, output, session){
     
     ## leave datatable function in for "prettyfying" the final result    
     DT::datatable(data = Sample_analysis_2,
-              options = list(pageLength = 10),
+              options = list(pageLength = 10, stateSave = TRUE),
               rownames = F)
     
     # Possible improvements:
