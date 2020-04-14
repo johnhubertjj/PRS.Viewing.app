@@ -13,10 +13,10 @@ app_ui <- function(request) {
 
       navbarPage(
     # Create a logo in the top left, will probably undo at a later date while I create a style in JS or CSS myself, but this will work for now.
- 
       title = tags$div(img(src="www/PRSent_logo.png", style="margin-top: -20px; padding-right:10px;padding-bottom:10px", height = 75)),
                   fluid = T, 
                   theme = shinythemes::shinytheme("united"),
+                  #theme = "theme1.css",
                   windowTitle="PRSent your data clearly",
                   #titlePanel(title=img(src='www/PRSent_logo.png')),
                   tabPanel("Gene-set Analysis Viewer",
@@ -52,6 +52,8 @@ golem_add_external_resources <- function(){
     
     tags$link(rel = "shortcut icon", type = "image/png", href = "www/PRSent_logo.png"),
     tags$link(rel = "shortcut icon", type = "image/png", href = "www/GitHub-Mark.png"),
+    tags$link(rel="stylesheet", type="text/css", href="www/test.css"),
+    
     tags$title("PRSent")
     
 
