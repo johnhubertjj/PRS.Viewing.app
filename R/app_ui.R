@@ -11,17 +11,17 @@ app_ui <- function(request) {
     
     # List the first level UI elements here 
 
-      navbarPage(
-    # Create a logo in the top left, will probably undo at a later date while I create a style in JS or CSS myself, but this will work for now.
-      title = tags$div(img(src="www/PRSent_logo.png", style="margin-top: -20px; padding-right:10px;padding-bottom:10px", height = 75)),
-                  fluid = T, 
+      fluidPage(
+        
                   theme = shinythemes::shinytheme("united"),
                   #theme = "theme1.css",
-                  windowTitle="PRSent your data clearly",
+                  title = "PRSent your data clearly",
                   #titlePanel(title=img(src='www/PRSent_logo.png')),
-                  tabPanel("Gene-set Analysis Viewer",
-                    mod_Gene_set_regression_ui("Gene_set_regression_ui_1")
-                  )
+                  titlePanel(title = "PRSent your data clearly"),
+                    tabPanel("Gene-set Analysis Viewer",
+                      mod_Gene_set_regression_ui("Gene_set_regression_ui_1")
+                    )
+                  
       )
     )
   
